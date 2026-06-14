@@ -1,3 +1,5 @@
+package br.edu.ifsuldeminas.sd.chat;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -23,19 +25,15 @@ class TCPReceiver implements Receiver {
 		while (true) {
 			try {
 				Socket socket = serverSocket.accept();
-				BufferedReader reader = new BufferedReader
-						(new InputStreamReader(socket.getInputStream())
-								);
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(socket.getInputStream()));
 				String message = reader.readLine();
-
 				if (message != null) {
 					container.newMessage(message);
 				}
 				socket.close();
 			} catch (Exception e) {
-				container.newMessage(
-						"Erro no receiver TCP."
-						);
+				container.newMessage("Erro no receiver TCP.");
 			}
 		}
 	}

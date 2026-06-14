@@ -1,10 +1,3 @@
-package br.edu.ifsuldeminas.sd.chat.view;
-
-import br.edu.ifsuldeminas.sd.chat.ChatException;
-import br.edu.ifsuldeminas.sd.chat.ChatFactory;
-import br.edu.ifsuldeminas.sd.chat.MessageContainer;
-import br.edu.ifsuldeminas.sd.chat.Sender;
-
 import javax.swing.*;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -20,6 +13,7 @@ public class ChatView extends JFrame implements MessageContainer {
     private JButton btnDisconnect;
     private Sender sender;
     private String userName;
+    private boolean isMulticast;
 
     public ChatView(
     		String protocol,
@@ -30,9 +24,10 @@ public class ChatView extends JFrame implements MessageContainer {
     ) {
 
         this.userName = userName;
+        this.isMulticast = protocol.equalsIgnoreCase("MULTICAST");
 
         setTitle(
-                "UDP & TCP Chat - " + userName
+                (isMulticast ? "Multicast Chat" : "UDP & TCP Chat") + " - " + userName
         );
 
         setSize(700,450);
@@ -271,13 +266,15 @@ public class ChatView extends JFrame implements MessageContainer {
             return;
         }
 
-        String formattedMessage =
-                String.format(
-                        "%s%s%s",
-                        message,
-                        MessageContainer.FROM,
-                        userName
-                );
+        // Formato da mensagem depende do protocolo
+        // Multicast: "[nickname] texto" (conforme atividade)
+        // UDP/TCP: "texto::de::nickname" (formato original)
+        String formattedMessage;
+        if (isMulticast) {
+            formattedMessage = "[" + userName + "] " + message;
+        } else {
+            formattedMessage = String.format("%s%s%s", message, MessageContainer.FROM, userName);
+        }
 
         try {
 
@@ -305,32 +302,27 @@ public class ChatView extends JFrame implements MessageContainer {
 
         SwingUtilities.invokeLater(() -> {
 
-            if (message.contains(
-                    MessageContainer.FROM
-            )) {
+            if (isMulticast) {
+                // Mensagens multicast chegam no formato "[nickname] texto"
+                // Exemplo: "[Alice] Oi pessoal!"
+                if (message.startsWith("[") && message.contains("] ")) {
+                    int fechaBracket = message.indexOf("] ");
+                    String from = message.substring(1, fechaBracket);
+                    String text = message.substring(fechaBracket + 2);
+                    appendColoredMessage(from, text, Color.CYAN);
+                } else {
+                    appendColoredMessage("Sistema", message, Color.ORANGE);
+                }
 
-                String[] parts =
-                        message.split(
-                                MessageContainer.FROM
-                        );
-
+            } else if (message.contains(MessageContainer.FROM)) {
+                // Mensagens UDP/TCP chegam no formato "texto::de::nickname"
+                String[] parts = message.split(MessageContainer.FROM);
                 String text = parts[0];
-
                 String from = parts[1];
-
-                appendColoredMessage(
-                        from,
-                        text,
-                        Color.CYAN
-                );
+                appendColoredMessage(from, text, Color.CYAN);
 
             } else {
-
-                appendColoredMessage(
-                        "Sistema",
-                        message,
-                        Color.ORANGE
-                );
+                appendColoredMessage("Sistema", message, Color.ORANGE);
             }
         });
     }
