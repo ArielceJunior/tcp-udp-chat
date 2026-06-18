@@ -1,3 +1,4 @@
+package br.edu.ifsuldeminas.sd.chat;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

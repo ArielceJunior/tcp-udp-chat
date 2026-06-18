@@ -1,4 +1,10 @@
+package br.edu.ifsuldeminas.sd.chat.client;
+
 import java.util.Scanner;
+import br.edu.ifsuldeminas.sd.chat.ChatException;
+import br.edu.ifsuldeminas.sd.chat.ChatFactory;
+import br.edu.ifsuldeminas.sd.chat.MessageContainer;
+import br.edu.ifsuldeminas.sd.chat.Sender;
 
 public class Chat {
 	public static String KEY_TO_EXIT = "q";

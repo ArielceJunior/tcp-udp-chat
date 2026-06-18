@@ -1,3 +1,5 @@
+package br.edu.ifsuldeminas.sd.chat;
+
 import java.io.PrintWriter;
 import java.net.Socket;
 

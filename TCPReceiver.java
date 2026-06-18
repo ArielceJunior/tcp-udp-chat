@@ -1,3 +1,5 @@
+package br.edu.ifsuldeminas.sd.chat;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;

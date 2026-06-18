@@ -1,3 +1,4 @@
+package br.edu.ifsuldeminas.sd.chat;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -20,10 +21,7 @@ public class ChatFactory {
 					ChatFactory.container);
 			return new UDPSender(InetAddress.getByName(ChatFactory.serverName),
 					ChatFactory.serverPort);
-			} else if (protocol.equalsIgnoreCase("MULTICAST")) {
-                new MulticastReceiver(ChatFactory.serverName, ChatFactory.serverPort, ChatFactory.container);
-                return new MulticastSender(ChatFactory.serverName, ChatFactory.serverPort);
-            } else {
+			} else {
                 new TCPReceiver(ChatFactory.localPort, ChatFactory.container);
                 return new TCPSender(ChatFactory.serverName, ChatFactory.serverPort);
             }
